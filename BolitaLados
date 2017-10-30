@@ -1,0 +1,46 @@
+float ball_diametro =30; 
+float puntox; 
+float puntoy; 
+float salto=20;
+float zapperwidth =6; 
+float posX=zapperwidth+0.5*ball_diametro-2;
+
+void setup() {
+  size (1000, 1000); 
+
+  puntox = 0.5*width; 
+  puntoy = height-0.5*ball_diametro+1;
+}
+void draw() {
+  background (0);
+  fill (255); 
+  rect(0, 0, zapperwidth, height);
+  ellipse(puntox, puntoy, ball_diametro, ball_diametro); 
+  
+  if (keyPressed &&puntox<width) {
+    
+    if (key=='D'||key=='d') {
+      puntox+=6;
+    }
+    if (key=='a'||key=='A') {
+      puntox -= 6;
+    }
+    if (key=='w'||key=='W') {
+      puntoy-=salto;
+      if(puntoy==height/2){
+      puntoy=height/2;
+      }
+    }
+    
+    if (key=='s'||key=='S') {
+      puntoy+=6;
+    }
+  }
+
+
+  /*if (puntox < posX) {
+    gameover();
+  }*/
+}
+void gameover() {
+}
