@@ -32,10 +32,10 @@
   
   ## Antecedentes
   
- -Pokemon 
- -Super Mario Bros
- -Donkey Kong
- -Ice Climber
+ - Pokemon 
+ - Super Mario Bros
+ - Donkey Kong
+ - Ice Climber
  
  
   
@@ -47,7 +47,7 @@
  - Generar intereses en las personas.
  - Poder aplicar los conocimientos obtenidos en la materia.
   
-  ##Requisitos
+   ## Requisitos
   
  (https://processing.org/reference/libraries/) que se emplearían para su desarrollo.>
  -Processig
