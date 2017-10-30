@@ -2,17 +2,17 @@
   # Título del proyecto
   
 
- +RUNderground 
+ RUNderground 
   
 
  # Integrantes
   
 
- +|            Nombre        | Github nickname |
- +|--------------------------|-----------------|
- +|     Javier Africano      |    jafricanop   |
- +|     Juan Castro F        |     jcastrof    |
- +|     Nicolas Gomez T      |     ngomezt     |
+ |            Nombre        | Github nickname |
+ |--------------------------|-----------------|
+ |     Javier Africano      |    jafricanop   |
+ |     Juan Castro F        |     jcastrof    |
+ |     Nicolas Gomez T      |     ngomezt     |
   
   # Introducción
   
