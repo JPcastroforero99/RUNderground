@@ -41,22 +41,15 @@
  
   
   # Objetivos
-  
- +
   ## General
-  
-
- +-Desarrollar un software que permita conocer la universidad nacional a travez de una actividad didactica como lo es un juego.
-  
+ -Desarrollar un software que permita conocer la universidad nacional a travez de una actividad didactica como lo es un juego.
   ## Específicos
+ - Desarrollar un aplicativo que tenga una buena interfaz con el usuario.
+ - Generar intereses en las personas.
+ - Poder aplicar los conocimientos obtenidos en la materia.
   
- 
- +- Desarrollar un aplicativo que tenga una buena interfaz con el usuario.
- +- Generar intereses en las personas.
- +- Poder aplicar los conocimientos obtenidos en la materia.
-  
-  # Requisitos
+  ##Requisitos
   
  (https://processing.org/reference/libraries/) que se emplearían para su desarrollo.>
- +-Processig
- +-Librerias.
+ -Processig
+ -Librerias.
