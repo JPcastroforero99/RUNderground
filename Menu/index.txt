@@ -9,7 +9,7 @@
 <body>
 <script type="text/javascript">
 var boton=0;
-var vol=0;
+var vol=0.5;
 var plataforma;
 var barra;
 var enemigo;
@@ -123,7 +123,7 @@ function create() {
 }
 
 function update() {
-	//aud.play('', 0, 0, true); 
+	aud.play('', 0, 0.5, true); 
   if (boton==1) {
     if (crear==false) {
       create();
@@ -171,11 +171,10 @@ function update() {
       }
       if (controles.up.isDown && jugador.body.touching.down ) {
         jugador.body.velocity.y = -350;
-        //boom.play();
+        boom.play();
       }
 		if (controles.down.isDown) {
         jugador.body.velocity.y = 400;
-        //boom.play();
       }
     } else if (vidas ==0) {
       fondo.kill; 
