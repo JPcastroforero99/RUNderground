@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>RUNderground</title>
+<script type="text/javascript" src="js/phaser.min.js">
+</script>
+</head>
+<body>
+<script type="text/javascript">
+var boton=0;
+var vol=0;
+var plataforma;
+var barra;
+var enemigo;
+var fondo;
+var jugador;
+var controles;  
+var button;
+var vidas=3;
+var button2;
+var button3;
+var crear =false; 
+var perdio;
+var fondo1;
+var aud;
+var porro;
+var boom;
+var estrella;
+var vel=150;
+var weapon;	
+var bullet;
+var fireButton;
+var juego = new Phaser.Game(800, 600, Phaser.AUTO, 'juego', {preload: preload, create: create, update: update, render: render});
+function preload() {
+  juego.load.image('mapa', 'sprites/mapaM.png');
+  juego.load.image('mapan1', 'sprites/mapan1.png');
+  juego.load.image('plataforma', 'sprites/plataforma.png');
+  juego.load.spritesheet('pa', 'sprites/sprite.png', 32, 42);
+  juego.load.image('boton', 'sprites/boton0.png');
+  juego.load.image('boton1', 'sprites/boton1.png');
+  juego.load.image('fondo', 'sprites/fondo.png');
+  juego.load.image('enemigo', 'sprites/enemigo.png');
+  juego.load.image('perdio', 'sprites/perdio.png');
+  juego.load.image('menu', 'sprites/icono.png');
+  juego.load.audio('aud', 'audio/shampoo.mp3');
+  juego.load.audio('boom', 'audio/numkey.wav');
+  juego.load.image('opciones', 'sprites/boton2.png');
+  juego.load.image('estrella', 'sprites/estrella.png');
+  juego.load.image('porro', 'sprites/porro.png');
+  juego.load.image('bullet', 'sprites/bullet.png');
+}
+function create() {
+	fondo1= juego.add.sprite(0,0,'menu');
+	
+  button = juego.add.button(juego.world.centerX-100, 300, 'boton', actionOnClick, this);
+  button2 = juego.add.button(juego.world.centerX-100, 400, 'boton1', Click, this);
+  button3 = juego.add.button(juego.world.centerX-100, 500, 'opciones', Click2, this);
+  aud = juego.add.audio('aud');
+  boom = juego.add.audio('boom');
+  aud=aud.play('', 0, vol, true); 
+	
+	weapon = juego.add.weapon(30, 'estrella');	
+		//weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+		weapon.bulletSpeed = 50;
+		weapon.fireRate = 60;
+		fireButton = juego.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  if (boton==1) {
+    juego.physics.startSystem(Phaser.Physics.ARCADE);
+    juego.add.sprite(0, 0, 'mapa');
+    juego.world.setBounds(0, 0, 1600, 1600);
+    jugador = juego.add.sprite(200, 100, 'pa');
+    juego.physics.arcade.enable(jugador);
+    jugador.body.collideWorldBounds = true;
+    jugador.animations.add('izquierda', [12, 13, 14, 15], 10, true);
+    jugador.animations.add('derecha', [4, 5, 6, 7], 10, true);
+    jugador.animations.add('abajo', [8, 9, 10, 11], 10, true);
+    jugador.animations.add('arriba', [0, 1, 2, 3], 10, true);  
+    controles = juego.input.keyboard.createCursorKeys();
+    juego.camera.follow(jugador);
+  } 
+  if (boton==2) {
+    if (vidas!=0) {
+    	
+      juego.physics.startSystem(Phaser.Physics.ARCADE);
+      fondo = juego.add.sprite(0, 0, 'fondo');
+      enemigo= juego.add.sprite(100, 1690, 'enemigo');
+      porro= juego.add.sprite(700, 1064, 'porro');
+      juego.physics.arcade.enable(enemigo);
+      juego.physics.arcade.enable(porro);
+      plataforma=juego.add.group();
+      plataforma.enableBody = true; 
+      var piso = plataforma.create(0, fondo.height - 32, 'plataforma');
+      piso.scale.setTo(2, 1);
+      piso.body.immovable = true;
+      for (var i= 0; i<17; i++) {
+        if (i%2==0) {
+          barra = plataforma.create(400, 1550-i*100, 'plataforma');
+          barra.body.immovable = true;
+        } else if (i%2!=0) {
+          barra = plataforma.create(-200, 1550-i*100, 'plataforma');
+          barra.body.immovable = true;
+        }
+      }
+      estrella = juego.add.sprite(10,10,'estrella');
+
+
+      juego.world.setBounds(0, 0, 800, 1764);
+      jugador = juego.add.sprite(200, 1668, 'pa');
+      juego.physics.arcade.enable(jugador);
+      jugador.body.gravity.y = 300;
+      jugador.body.collideWorldBounds = true;
+      jugador.animations.add('izquierda', [12, 13, 14, 15], 10, true);
+      jugador.animations.add('derecha', [4, 5, 6, 7], 10, true);
+      controles = juego.input.keyboard.createCursorKeys();
+      juego.camera.follow(jugador);
+    } else {
+      perdio=juego.add.image(0, 1165, 'perdio');      
+    }
+  }if (boton==3) {
+   	
+  } 
+}
+
+function update() {
+	//aud.play('', 0, 0, true); 
+  if (boton==1) {
+    if (crear==false) {
+      create();
+      crear=true;
+    }
+
+    jugador.body.velocity.x = 0;
+    jugador.body.velocity.y = 0;
+    if (controles.left.isDown) {
+      jugador.body.velocity.x = -150;
+      jugador.animations.play('izquierda');
+    } else if (controles.right.isDown) {
+      jugador.body.velocity.x = 150;
+      jugador.animations.play('derecha');
+    } else if (controles.down.isDown) {
+      jugador.body.velocity.y = 150;
+      jugador.animations.play('abajo');
+    } else if (controles.up.isDown) {
+      jugador.body.velocity.y = -150;
+      jugador.animations.play('arriba');
+    } else {
+      jugador.animations.stop();
+      jugador.frame = 9;
+    }
+  } else if (boton==2) {
+    if (vidas!=0) {
+
+      if (crear==false) {
+        create();
+        crear=true;
+      }
+      juego.physics.arcade.overlap(jugador, enemigo, matar, null, this);
+      juego.physics.arcade.overlap(jugador, porro, obtener, null, this);
+      jugador.body.velocity.x = 0;
+      juego.physics.arcade.collide(jugador, plataforma);
+      if (controles.left.isDown) {
+        jugador.body.velocity.x = -(vel);
+        jugador.animations.play('izquierda');
+      } else if (controles.right.isDown) {
+        jugador.body.velocity.x = vel;
+        jugador.animations.play('derecha');
+      } else {  
+        jugador.animations.stop();
+        jugador.frame = 9;
+      }
+      if (controles.up.isDown && jugador.body.touching.down ) {
+        jugador.body.velocity.y = -350;
+        //boom.play();
+      }
+		if (controles.down.isDown) {
+        jugador.body.velocity.y = 400;
+        //boom.play();
+      }
+    } else if (vidas ==0) {
+      fondo.kill; 
+      create();
+    }
+  }
+  if (fireButton.isDown)
+    {
+        weapon.fire();
+    }
+}
+function render(){
+	weapon.debug();
+}
+function matar(mar, pla) {
+  mar.kill();
+  vidas=vidas-1;
+  crear=false;
+}
+function obtener(mar, pla) {
+  pla.kill();
+  vel=300;
+}
+function actionOnClick () {
+
+  boton=1;
+}
+function Click () {
+
+  boton=2;
+}
+function Click2 (){
+	aud.pause();
+}
+</script>
+</body>
+</html>
