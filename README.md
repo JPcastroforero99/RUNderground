@@ -1,7 +1,7 @@
  |--------------------------|-----------------|
-  |     Javier Africano      |    jafricanop   |
-  |     Juan Castro F        |     jcastrof    |
-  |     Nicolas Gomez T      |     ngomezt     |
+ |     Javier Africano      |    jafricanop   |
+ |     Juan Castro F        |     jcastrof    |
+ |     Nicolas Gomez T      |     ngomezt     |
    
    # Introducción
    
@@ -19,7 +19,8 @@
     Mapa de Bits: https://es.wikipedia.org/wiki/Imagen_de_mapa_de_bits
     
     
-    ## Antecedentes
+    
+   ## Antecedentes
     
   -Pokemon 
   -Super Mario Bros
@@ -40,7 +41,6 @@
    - Generar intereses en las personas.
    - Poder aplicar los conocimientos obtenidos en la materia.
     
-  ##Requisitos
     ## Requisitos
     
    (https://processing.org/reference/libraries/) que se emplearían para su desarrollo.>
