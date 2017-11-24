@@ -1,4 +1,4 @@
-class Juego extends Niveles(){
+
 
 
 /*var plataforma;
@@ -7,11 +7,13 @@ var vidas=3;
  
 var perdio;
 var porro;*/
-	constructor(){
+	
 var juego = new Phaser.Game(800, 600, Phaser.AUTO, 'juego', {preload: preload, create: create, update: update});
 var boton;
 var crear =false;
-	}
+var jugador1;
+var interfaz;
+	
 
 
  function preload () {
@@ -44,21 +46,29 @@ var crear =false;
 	
 	
   if (boton==0) {
-	   var interfaz=new niveles(0,'pa','','mapa');		
-	   interfaz.jugador();
+      
+      var jugador1 = juego.add.sprite(200, 100, 'pa');
+	   var interfaz=new Niveles(0,juego,jugador1);		
 	   interfaz.fondo();
+      interfaz.jugador(juego,jugador1);
+       interfaz.tipodecontroles(juego,jugador1);
   } if (boton==1) { 
 	  this.fondo1= juego.add.sprite(0,0,'porro');
   } 
 }
 function  update() {
+      
 	//aud.play('', 0, 0.5, true); 
-  if (boton==0) {
+  if (boton==0) {      
 	  if (crear==false) {
       create();
       crear=true;
-    }
+    }  
+      var jugador1 = juego.add.sprite(200, 100, 'pa');
+      var interfaz=new Niveles(0,juego,jugador1);	
+      
     
+    interfaz.controlesplay(juego,jugador1);
   } 
  }
 /*function matar(mar, pla) {
@@ -77,4 +87,3 @@ function obtener(mar, pla) {
   boton=1;
 }
 
-}

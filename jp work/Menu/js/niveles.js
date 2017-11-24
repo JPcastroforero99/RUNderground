@@ -1,41 +1,36 @@
-class Niveles {
+ class Niveles {
 	
-	constructor (nivel,spritejugador,spriteenemigo,spritefondo){		
-		var nivel=nivel;
-		this.spritejugador=spritejugador;
-		this.spriteenemigo=spriteenemigo;
-		this.spritefondo=spritefondo;
-	}
+	constructor (nivel,juego,jugador1){		
+		this.nivel=nivel;
+		this.juego=juego;
+        this.jugador1=jugador1;
+        
+    }
 	
-tipodecontroles(){
-	if(nivel==0){
-		this.entrada = juego.input.keyboard.createCursorKeys();	
-		
-	}
+tipodecontroles(juego,jugador1){	
+		this.controles = juego.input.keyboard.createCursorKeys();	
 }
 
-	controles(){
-		if(nivel==0){
-			
-			jugador.body.velocity.x = 0;
-    jugador.body.velocity.y = 0;	  
+	controlesplay(juego,jugador1){				
+        jugador1.body.velocity.x = 0;
+        jugador1.body.velocity.y = 0;	  
     if (controles.left.isDown) {
-      jugador.body.velocity.x = -150;
-      jugador.animations.play('izquierda');
+      jugador1.body.velocity.x = -150;
+      jugador1.animations.play('izquierda');
     } else if (controles.right.isDown) {
-      jugador.body.velocity.x = 150;
-      jugador.animations.play('derecha');
+      jugador1.body.velocity.x = 150;
+      jugador1.animations.play('derecha');
     } else if (controles.down.isDown) {
-      jugador.body.velocity.y = 150;
-      jugador.animations.play('abajo');
+      jugador1.body.velocity.y = 150;
+      jugador1.animations.play('abajo');
     } else if (controles.up.isDown) {
-      jugador.body.velocity.y = -150;
-      jugador.animations.play('arriba');
+      jugador1.body.velocity.y = -150;
+      jugador1.animations.play('arriba');
     } else {
-      jugador.animations.stop();
-      jugador.frame = 9;
+      jugador1.animations.stop();
+      jugador1.frame = 9;
     }
-		}		
+				
 		}
 	
 enemigos(){
@@ -44,31 +39,33 @@ enemigos(){
 	
 }
 	
-jugador(nivel){
-	this.jugador = juego.add.sprite(200, 100, 'pa');
-	if(nivel==0){
-		jugador.animations.add('izquierda', [12, 13, 14, 15], 10, true);
-    	jugador.animations.add('derecha', [4, 5, 6, 7], 10, true);
-    	jugador.animations.add('abajo', [8, 9, 10, 11], 10, true);
-    	jugador.animations.add('arriba', [0, 1, 2, 3], 10, true); 
-		jugador.body.collideWorldBounds = true;
-	   }
-}
+jugador(juego,jugador1){
+	
+    juego.physics.arcade.enable(jugador1);
+    jugador1.body.collideWorldBounds = true;
+    	jugador1.animations.add('izquierda', [12, 13, 14, 15], 10, true);
+    	jugador1.animations.add('derecha', [4, 5, 6, 7], 10, true);
+    	jugador1.animations.add('abajo', [8, 9, 10, 11], 10, true);
+    	jugador1.animations.add('arriba', [0, 1, 2, 3], 10, true); 
+		
+	   
+}   
 conseguido(){
 		
 	
 }
 	
-fondo(nivel){
+fondo(jugador){
 	
-    juego.add.sprite(0, 0, 'spritefondo');
-if(nivel==0){
-	
-	juego.physics.arcade.enable(jugador);
+    juego.physics.startSystem(Phaser.Physics.ARCADE);
+    juego.add.sprite(0, 0, 'mapa');
+    juego.world.setBounds(0, 0, 1600, 1600);
 	juego.camera.follow(jugador);
-	juego.physics.startSystem(Phaser.Physics.ARCADE);    
-    juego.world.setBounds(0, 0, 1600, 1600);   
+	
+	
+	    
+       
     
-}
+
 }
 }
