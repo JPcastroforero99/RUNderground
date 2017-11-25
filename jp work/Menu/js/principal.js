@@ -1,7 +1,14 @@
-var juego = juego || {};
+class RUNderground extends Phaser.Game {
 
-//initiate the Phaser framework
-juego.game = new Phaser.Game('100%', '100%', Phaser.AUTO);
+	constructor() {
 
-juego.game.state.add('GameState', juego.GameState);
-juego.game.state.start('GameState'); 
+		super(800, 600, Phaser.AUTO);
+
+		this.state.add('menu', juego.GameState);
+
+		this.state.start('menu');
+	}
+
+}
+
+new RUNderground();
