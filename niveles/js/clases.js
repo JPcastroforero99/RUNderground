@@ -8,7 +8,7 @@ class Game extends Phaser.Game {
         this.state.add('Nivel3', Nivel3, false);
         this.state.add('Nivel4', Nivel4, false);
         this.state.add('Nivel5', Nivel5, false)        
-		this.state.start('Nivel4');
+		this.state.start('Menu');
 	}
 
 }
@@ -59,14 +59,10 @@ this.salt=350;
    this.load.image('bala', 'sprites/bala.png');
  }
 	create() {
-		/*let center = { x: this.game.world.centerX, y: this.game.world.centerY }
-		let text = new RainbowText(this.game, center.x, center.y, "- phaser -\nwith a sprinkle of\nES6 dust!");
-		text.anchor.set(0.5);*/
+		
         
         this.fondo1= this.add.sprite(0,0,'menu'); 	
         this.button = this.add.button(this.world.centerX-100, 300, 'boton', this.actionOnClick);
-        this.button2 = this.add.button(this.world.centerX-100, 400, 'boton1', this.Click);
-        this.button3 = this.add.button(this.world.centerX-100, 500, 'opciones', this.Click2);
         this.aud = this.add.audio('aud');
         this.boom = this.add.audio('boom');
         this.aud=this.aud.play('', 0, this.vol, true);
@@ -74,31 +70,28 @@ this.salt=350;
         
 	}    
   actionOnClick () { 
-   //this.boton=1;
+   
      this.game.state.start('Nivel1');
       
  }
-  Click () {
  
-   this.boton=2;
-      this.game.state.start('Nivel3');
- }
-  Click2 (){
- 	
- console.log(3);
-}
 }
 class Nivel1 extends Phaser.State {
 
 	constructor() {
 		//super(game, x, y, text, { font: "45px Arial", fill: "#ff0044", align: "center" });
         super();
+        this.juegogeneral=0;
         
         
 		
 	}   
     preload(){
     this.load.image('mapa', 'sprites/mapaM.png');
+    this.load.image('nivel2', 'sprites/mapaM.png');
+    this.load.image('nivel3', 'sprites/mapaM.png');
+    this.load.image('nivel4', 'sprites/mapaM.png');
+    this.load.image('nivel5', 'sprites/mapaM.png');
     this.load.spritesheet('pa', 'sprites/sprite.png', 32, 42);
         
     }	
@@ -106,6 +99,11 @@ class Nivel1 extends Phaser.State {
 		     
      this.physics.startSystem(Phaser.Physics.ARCADE);
      this.add.sprite(0, 0, 'mapa');
+    /*
+    coloca los 4 sprites en la posicion que son 
+    this.add.sprite(0, 0, 'mapa');
+    
+    */
      this.world.setBounds(0, 0, 1600, 1600);
      this.jugador = this.add.sprite(790, 900, 'pa');
      this.physics.arcade.enable(this.jugador);
@@ -116,7 +114,15 @@ class Nivel1 extends Phaser.State {
      this.jugador.animations.add('arriba', [0, 1, 2, 3], 10, true);  
      this.controles = this.input.keyboard.createCursorKeys();
      this.camera.follow(this.jugador);
-	}
+        
+    this.contadorniveles = this.add.text(10, 10,(4-this.juegogeneral), { font: '34px Arial', fill: '#fff' });
+    
+    this.textodefinal = this.add.text(this.world.centerX,this.world.centerY,' ', { font: '36px Arial', fill: '#fff' });
+    this.textodefinal.anchor.setTo(0.5, 0.5);
+    this.textodefinal.visible = false;
+        
+        
+    }
 	update() {
         
         this.jugador.body.velocity.x = 0;
@@ -137,8 +143,45 @@ class Nivel1 extends Phaser.State {
        this.jugador.animations.stop();
        this.jugador.frame = 9;
      }
+    
+    
+    this.contadorniveles.visible=true;    
+    this.physics.arcade.overlap(this.nivel2, this.jugador, this.pasaralnivel2, null, this);
+    this.physics.arcade.overlap(this.nivel3, this.jugador, this.pasaralnivel3, null, this);
+    this.physics.arcade.overlap(this.nivel4, this.jugador, this.pasaralnivel4, null, this);
+    this.physics.arcade.overlap(this.nivel5, this.jugador, this.pasaralnivel5, null, this);
+        
+    if(this.juegogeneral==4){
+        
+    this.stateText.text=" FELICIDADES \n Te graduaste";
+    this.stateText.visible = true;  
+    }
 	}
 
+pasaralnivel2(){
+    this.juegogeneral+=1;
+    nivel2.kill();
+    this.game.state.start('Nivel2');
+    
+}    
+pasaralnivel3(){
+    nivel3.kill();
+    this.game.state.start('Nivel2');
+    this.juegogeneral+=1;
+    
+}  
+pasaralnivel4(){
+    this.juegogeneral+=1;
+    nivel4.kill();
+    this.game.state.start('Nivel3');
+    
+}  
+pasaralnivel5(){
+    this.juegogeneral+=1;
+    nivel5.kill();
+    this.game.state.start('Nivel4');
+    
+} 
 } 
 class Nivel2 extends Phaser.State {
  
@@ -346,82 +389,120 @@ class Nivel3 extends Phaser.State {
   }
      bestrella(mar, pla) {
     pla.kill();
-    this.game.state.start('Nivel4');
+    this.game.state.start('Nivel1');
   }
 }
 class Nivel4 extends Phaser.State {
 
 	constructor() {
-		super();  
-        this.candyTimer=0;
-        var candy;
+        super();
+		this.temporizadorestudios=0;
+        var items;
         this.contador=0;
+        var dormir;
+        var vive100;
+        this.loseup=0;
+        this.powerup=0;
+        this.vivo=true;
+
 	}   
     preload(){
         
-    this.load.image('sky', 'sprites/background.png');
-			this.load.spritesheet('candy', 'sprites/cosas que caen.png', 82, 98);		
-			this.load.image('gameover', 'sprites/gameover.png');
+this.load.image('salondeclases', 'sprites/background.png');
+this.load.spritesheet('items', 'sprites/cosas que caen.png', 82, 98);		
+this.load.image('vive100', 'sprites/vive.png');
+this.load.image('dormir', 'sprites/zzz.png');        
 
 
    
  }	
 	create() {
-		this.add.sprite(0, 0, 'sky');
+				this.add.sprite(0, 0,'salondeclases');
 
 
-
-// start the physics engine
 this.physics.startSystem(Phaser.Physics.ARCADE);
-// set the global gravity
-this.physics.arcade.gravity.y = 200;
-
+this.physics.arcade.gravity.y = 200+(this.contador*3)-(this.powerup)+(this.loseup);
+        
+this.estadodelnivel = this.add.text(300,300,' ', { font: '84px Arial', fill: '#FBFF00' });
+this.estadodelnivel.anchor.setTo(0.5, 0.5);
+this.estadodelnivel.visible = false;
+        
+this.marcadorString = 'Faltan: ';
+this.contadoritems = this.add.text(10, 10,this.contador , { font: '34px Arial', fill: '#fff' });
 
 	}
 	update() {
-        this.candyTimer += this.time.elapsed;
- 	//if spawn timer reach one second (1000 miliseconds)
- 	if(this.candyTimer > 1000) {
- 		// reset it
- 		this.candyTimer = 0;
- 		// and spawn new candy
- 				var dropPos = Math.floor(Math.random()*590);
- 		var candy = this.add.sprite(dropPos, 50, 'candy');
- 				var candyType = Math.floor(Math.random()*5);
- 				candy.animations.add('anim', [candyType], 10, true);
-		// play the newly created animation
-		candy.animations.play('anim');
-
- 		candy.inputEnabled = true;
- 		candy.events.onInputDown.add(this.clickCandy, this);
- 		candy.checkWorldBounds = true;
-// reset candy when it goes out of screen
-candy.events.onOutOfBounds.add(this.lose, this);
-
- 		this.physics.enable(candy, Phaser.Physics.ARCADE); 
-        
-        if(this.contador==20){
-            
-            this.add.sprite(20, 300, 'gameover');
-            
+        this.temporizadorestudios += this.time.elapsed;
+    if(this.vivo) {   
+ 	if(this.temporizadorestudios > 1000) {
+ 		this.temporizadorestudios = 0;
+ 		var posicioncaida = Math.floor(Math.random()*590);
+ 		var items = this.add.sprite(posicioncaida, 50, 'items');
+        var tipodeutil = Math.floor(Math.random()*5);
+        items.animations.add('anim', [tipodeutil], 10, true);
+		items.animations.play('anim');
+ 		items.inputEnabled = true;
+ 		items.events.onInputDown.add(this.clickitem, this);
+ 		items.checkWorldBounds = true;
+        items.events.onOutOfBounds.add(this.lose, this);
+ 		this.physics.enable(items, Phaser.Physics.ARCADE);
+        if(this.contador%10==0){ 
+        this.temporizadorestudios = 0;
+        var posicioncaida = Math.floor(Math.random()*590);
+ 		var dormir = this.add.sprite(posicioncaida, 50, 'dormir');        
+ 		dormir.inputEnabled = true;
+ 		dormir.events.onInputDown.add(this.clickdormir, this);
+ 		this.physics.enable(dormir, Phaser.Physics.ARCADE);
         }
-
-
+        if(this.contador%14==0){ 
+        var posicioncaida = Math.floor(Math.random()*590);
+ 		var vive100 = this.add.sprite(posicioncaida, 50, 'vive100');        
+ 		vive100.inputEnabled = true;
+ 		vive100.events.onInputDown.add(this.clickvive100, this);
+ 		this.physics.enable(vive100, Phaser.Physics.ARCADE);
+        }
+        
+        if(this.contador==70){  
+            this.vivo=false;
+            this.estadodelnivel.text="GANASTE, CLICK \n PARA AVANZAR";
+            this.estadodelnivel.visible = true;     
+            this.input.onTap.addOnce(this.avanzar,this);
+            var items=0;
+        }
      }
-    
+    }
     }
      lose(){
-	this.add.sprite(20, 300, 'gameover');
-    this.game.state.start('Nivel1');
-	
+    this.vivo=false;    
+	this.estadodelnivel.text=" Click, reintentar";
+    this.estadodelnivel.visible = true;     
+    this.input.onTap.addOnce(this.reiniciar,this);
+    var items=0;
 
+}    
+reiniciar(){
+this.vivo=true;
+this.contador=0;
+    this.estadodelnivel.visible = false;  
 }
- clickCandy(candy){
-	candy.kill();
+ avanzar(){
+     
+     this.game.state.start('Nivel1');
+ }     
+ clickitem(items){
+	items.kill();
     this.contador=this.contador+1;
+     this.contadoritems.text=70-this.contador;
+     this.contadoritems.visible = true;
  }
-
-
+clickdormir(dormir){
+	dormir.kill();
+    loseup +=5;
+ } 
+clickvive100(vive100){
+	vive100.kill();
+    powerup +=5;
+ } 
     
 }
 class Nivel5 extends Phaser.State {
@@ -438,7 +519,7 @@ class Nivel5 extends Phaser.State {
         this.starfield;
         this.marcador = 0;
         this.marcadorString = '';
-        this.marcadorText;
+        this.contadoritems;
         this.vidas;
         this.balaenemigo;
         this.timerdedisparo = 0;
@@ -503,7 +584,7 @@ class Nivel5 extends Phaser.State {
 
     
     this.marcadorString = 'ETAPA: ';
-    this.marcadorText = this.add.text(10, 10, this.etapas, { font: '34px Arial', fill: '#fff' });
+    this.contadoritems = this.add.text(10, 10, this.etapas, { font: '34px Arial', fill: '#fff' });
 
     
     this.vidas = this.add.group();
@@ -605,8 +686,7 @@ class Nivel5 extends Phaser.State {
 
 
         
-     }  
-   
+     }     
     balavsbala(bala,balaenemigo){
        this.bala.kill();
         balaenemigo.kill();
@@ -617,7 +697,7 @@ class Nivel5 extends Phaser.State {
     
     this.bala.kill();
     esmad.kill(); 
-    this.marcadorText.text = this.etapas;
+    this.contadoritems.text = this.etapas;
    
 
     //  And create an explosion :)
@@ -651,12 +731,12 @@ class Nivel5 extends Phaser.State {
         
     }
 
-    //  And create an explosion :)
+    
     var explosion = this.explosions.getFirstExists(false);
     explosion.reset(this.capucho.body.x, this.capucho.body.y);
     explosion.play('kaboom', 30, false, true);
 
-    // When the capucho dies
+    
     if (this.vidas.countLiving() < 1)
     {
         this.capucho.kill();
@@ -665,7 +745,7 @@ class Nivel5 extends Phaser.State {
         this.stateText.text=" GAME OVER \n Click to restart";
         this.stateText.visible = true;
 
-        //the "click to restart" handler
+        
         this.input.onTap.addOnce(this.restart,this);
     }
 
