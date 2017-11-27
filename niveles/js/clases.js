@@ -8,7 +8,7 @@ class Game extends Phaser.Game {
         this.state.add('Nivel3', Nivel3, false);
         this.state.add('Nivel4', Nivel4, false);
         this.state.add('Nivel5', Nivel5, false);        
-		this.state.start('Nivel2');
+		this.state.start('Nivel4');
 	}
 
 }
@@ -48,7 +48,8 @@ class Nivel1 extends Phaser.State {
 	constructor() {
 		//super(game, x, y, text, { font: "45px Arial", fill: "#ff0044", align: "center" });
         super();
-        this.juegogeneral=0;     
+        this.juegogeneral=0; 
+     
         }
     
     preload(){
@@ -90,9 +91,9 @@ class Nivel1 extends Phaser.State {
      this.controles = this.input.keyboard.createCursorKeys();
      this.camera.follow(this.jugador);
         
-    this.contadorniveles = this.add.text(10, 10,(4-this.juegogeneral), { font: '34px Arial', fill: '#fff' });
-    
-    this.textodefinal = this.add.text(this.world.centerX,this.world.centerY,' ', { font: '36px Arial', fill: '#fff' });
+    this.contadorniveles = this.add.text((this.world.centerX-100),this.world.centerY-40,(4-this.juegogeneral), { font: '72px Arial', fill: '#fff' });
+    this.contadorniveles.visible=true;
+    this.textodefinal = this.add.text(this.world.centerX,this.world.centerY+50,' ', { font: '116px Arial', fill: '#000000' });
     this.textodefinal.anchor.setTo(0.5, 0.5);
     this.textodefinal.visible = false;
         
@@ -119,53 +120,57 @@ class Nivel1 extends Phaser.State {
        this.jugador.frame = 9;
      }
     
-    
-    this.contadorniveles.visible=true;    
-    this.physics.arcade.overlap(this.nivel2, this.jugador, this.pasaralnivel2, null, this);
-    this.physics.arcade.overlap(this.nivel3, this.jugador, this.pasaralnivel3, null, this);
-    this.physics.arcade.overlap(this.nivel4, this.jugador, this.pasaralnivel4, null, this);
-    this.physics.arcade.overlap(this.nivel5, this.jugador, this.pasaralnivel5, null, this);
         
+        this.physics.arcade.overlap(this.nivel2, this.jugador, this.pasaralnivel2, null, this);
+        
+ 
+        this.physics.arcade.overlap(this.nivel3, this.jugador, this.pasaralnivel3, null, this);
+   
+           this.physics.arcade.overlap(this.nivel4, this.jugador, this.pasaralnivel4, null, this);
+
+           this.physics.arcade.overlap(this.nivel5, this.jugador, this.pasaralnivel5, null, this);
+
+       
     if(this.juegogeneral==4){
-        
-    this.stateText.text=" FELICIDADES \n Te graduaste";
-    this.stateText.visible = true;  
+     this.contadorniveles.visible=false;   
+    this.textodefinal.text=" FELICIDADES \n Te graduaste";
+    this.textodefinal.visible = true;  
     }
 	}
 
 pasaralnivel2(){
     this.juegogeneral+=1;
-    this.nivel2.kill();
     this.game.state.start('Nivel2');
+   
     
 }    
 pasaralnivel3(){
-    this.nivel3.kill();
     this.game.state.start('Nivel3');
     this.juegogeneral+=1;
     
 }  
 pasaralnivel4(){
     this.juegogeneral+=1;
-    this.nivel4.kill();
     this.game.state.start('Nivel4');
+    
     
 }  
 pasaralnivel5(){
     this.juegogeneral+=1;
-    this.nivel5.kill();
     this.game.state.start('Nivel5');
     
+
 } 
 } 
 
 class Nivel2 extends Phaser.State {
    
  	constructor() {
- 		//super(game, x, y, text, { font: "45px Arial", fill: "#ff0044", align: "center" });
+ 		
         super();
         this.vel=100;
         this.vida=true;
+        this.temporizadorestudios=0;
          
  		
  	}   
@@ -177,9 +182,14 @@ class Nivel2 extends Phaser.State {
         this.load.image('estrella', 'sprites/estrella.png');
         this.load.image('piso', 'sprites/piso.png');
         this.load.image('cucaracha', 'sprites/curacha.png');
+        this.load.image('gota', 'sprites/gota.png');
          
      }	
  	create() {
+        
+    this.textodederrota = this.add.text(200,200,' ', { font: '68px Arial', fill: '#000000' });
+    this.textodederrota.anchor.setTo(0.5, 0.5);
+    this.textodederrota.visible = true;
         
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.fondo=this.add.sprite(0, 0, 'mapa1');
@@ -217,7 +227,21 @@ class Nivel2 extends Phaser.State {
       	this.camera.follow(this.jugador);
  	}
  	update() {
+        this.textodederrota.text="CLICK para reintentar";
+        this.textodederrota.visible = true;
+        this.temporizadorestudios += this.time.elapsed;
+        if(this.temporizadorestudios > 100) {
+ 		this.temporizadorestudios = 0;
+        var posicioncaida = Math.floor(Math.random()*9960);
+ 		this.gota = this.add.sprite(posicioncaida, 50, 'gota');
+        this.physics.arcade.enable(this.gota);
+        this.gota.enableBody = true;
+	    this.gota.body.gravity.y = 400;
+        this.gota.body.velocity.y = 700;
+ 		this.physics.enable(this.gota, Phaser.Physics.ARCADE);
+        }
         
+        this.physics.arcade.overlap(this.gota, this.jugador, this.semojo, null, this);
         this.jugador.body.velocity.x = this.vel;
         this.physics.arcade.collide(this.jugador, this.plataforma);
         this.jugador.animations.play('derecha');
@@ -238,11 +262,28 @@ class Nivel2 extends Phaser.State {
         }
     
     }
-    matar(mar, pla) {
-         this.vel=0;
+    
+    semojo(){
+        this.vel=0;
          this.jugador.animations.stop();
          this.jugador.frame = 9;
          this.vida=false;
+         
+        
+        
+    }
+    matar() {
+         this.vel=0;
+         this.jugador.animations.stop();
+         this.jugador.frame = 9;
+         this.vida=false;       
+        this.input.onTap.addOnce(this.restart,this);
+    }
+    
+    restart(){
+        
+        this.vel=100;        
+        this.create();
     }
     bestrella(mar, pla) {
         pla.kill();
@@ -261,6 +302,7 @@ class Nivel3 extends Phaser.State {
          this.vel=150;
         this.vidas=3;
         this.salt=350;
+        this.balaTime = 0;
         
  	}   
      preload(){
@@ -272,6 +314,7 @@ class Nivel3 extends Phaser.State {
     this.load.image('perdio', 'sprites/perdio.png');
     this.load.image('estrella', 'sprites/estrella.png');
     this.load.image('porro', 'sprites/porro.png');
+        this.load.image('profesorbala', 'sprites/granda.png');
     
   }	
  	create() {
@@ -327,10 +370,24 @@ class Nivel3 extends Phaser.State {
         this.jugador.animations.add('derecha', [4, 5, 6, 7], 10, true);
         this.controles = this.input.keyboard.createCursorKeys();
         this.camera.follow(this.jugador);
+            
+        this.profesorbalas = this.add.group();
+    this.profesorbalas.enableBody = true;
+    this.profesorbalas.physicsBodyType = Phaser.Physics.ARCADE;
+    this.profesorbalas.createMultiple(1, 'profesorbala');
+    this.profesorbalas.setAll('anchor.x', 0.5);
+    this.profesorbalas.setAll('anchor.y', 1);
+    this.profesorbalas.setAll('outOfBoundsKill', true);
+    this.profesorbalas.setAll('checkWorldBounds', true);
+
+    this.estadodelnivel = this.add.text(200,800,' ', { font: '84px Arial', fill: '#fff' });
+    this.estadodelnivel.anchor.setTo(0.5, 0.5);
+    this.estadodelnivel.visible = false;
+
+            
       } else {
         this.perdio=this.add.image(0, 1165, 'perdio'); 
-          this.boton1 = this.add.button(this.world.centerX-100, 1500, 'boton', this.Clic);
-      }
+          }
  	}
  	update() { if (this.vidas!=0) {
         
@@ -361,15 +418,37 @@ class Nivel3 extends Phaser.State {
           this.jugador.body.velocity.y = 400;
           //boom.play();
         }
+              
+        this.profesordispara();
+        
+        this.physics.arcade.overlap(this.profesorbalas, this.jugador, this.enemigomegolpea, null, this);
+
       } else if (this.vidas ==0) {
         this.fondo.kill; 
         this.create();
+        this.input.onTap.addOnce(this.restart,this);
       }}
+    
+    enemigomegolpea(mar,pla){
+     mar.kill();
+    this.vidas=this.vidas-1;
+    this.crear=false;        
+    }
   matar(mar, pla) {
     mar.kill();
     this.vidas=this.vidas-1;
     this.crear=false;
   }
+    profesordispara () {
+    
+        this.balaenemigo = this.profesorbalas.getFirstExists(false);
+        if (this.balaenemigo){        
+        var shooter=this.enemigo;      
+        this.balaenemigo.reset(shooter.body.x, shooter.body.y);
+        this.physics.arcade.moveToObject(this.balaenemigo,this.jugador,400);        
+    }
+    }
+
    pvolar(mar, pla) {
     pla.kill();
     this.salt=400;
@@ -379,10 +458,15 @@ class Nivel3 extends Phaser.State {
     pla.kill();
     this.game.state.start('Nivel1');
   }
-     Clic () {
-      this.game.state.start('Nivel2');
-         this.vidas=3;
- }
+    
+restart(){
+     this.vel=150;
+        this.vidas=3;
+        this.salt=350;
+        this.balaTime = 0;
+    this.crear=false;
+}
+ 
      
  }
 
@@ -432,6 +516,8 @@ this.contadoritems = this.add.text(10, 10,this.contador , { font: '34px Arial', 
  		this.temporizadorestudios = 0;
  		var posicioncaida = Math.floor(Math.random()*590);
  		var items = this.add.sprite(posicioncaida, 50, 'items');
+        this.physics.enable(items, Phaser.Physics.ARCADE);
+        items.body.velocity.y = 150+(this.contador*5)-(this.powerup*5)+(this.loseup*5);
         var tipodeutil = Math.floor(Math.random()*5);
         items.animations.add('anim', [tipodeutil], 10, true);
 		items.animations.play('anim');
