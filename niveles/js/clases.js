@@ -8,7 +8,7 @@ class Game extends Phaser.Game {
         this.state.add('Nivel3', Nivel3, false);
         this.state.add('Nivel4', Nivel4, false);
         this.state.add('Nivel5', Nivel5, false)        
-		this.state.start('Nivel5');
+		this.state.start('Nivel4');
 	}
 
 }
@@ -360,7 +360,7 @@ class Nivel4 extends Phaser.State {
     preload(){
         
     this.load.image('sky', 'sprites/background.png');
-			this.load.spritesheet('candy', 'sprites/candy.png', 82, 98);		
+			this.load.spritesheet('candy', 'sprites/cosas que caen.png', 82, 98);		
 			this.load.image('gameover', 'sprites/gameover.png');
 
 
@@ -451,11 +451,11 @@ class Nivel5 extends Phaser.State {
     preload(){
         
     this.load.image('bala', 'sprites/bullet.png');
-    this.load.image('esmadbala', 'sprites/enemy-bullet.png');
-    this.load.spritesheet('enemigo', 'sprites/invader32x32x4.png', 32, 32);
+    this.load.image('esmadbala', 'sprites/granda.png');
+    this.load.spritesheet('enemigo', 'sprites/policia.png', 32, 42);
     this.load.image('capuchovida', 'sprites/player.png');
     this.load.spritesheet('kaboom', 'sprites/explode.png', 128, 128);
-    this.load.image('starfield', 'sprites/starfield.png');
+    this.load.image('starfield', 'sprites/porteria.png');
     this.load.image('background', 'sprites/background2.png');
 
 
@@ -572,8 +572,7 @@ class Nivel5 extends Phaser.State {
 }
 	update() {
         
-    this.starfield.tilePosition.y += 2;
-
+    
     if (this.capucho.alive)
     {
         
