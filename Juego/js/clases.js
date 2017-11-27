@@ -8,7 +8,7 @@ class Game extends Phaser.Game {
         this.state.add('Nivel3', Nivel3, false);
         this.state.add('Nivel4', Nivel4, false);
         this.state.add('Nivel5', Nivel5, false);        
-		this.state.start('Nivel4');
+		this.state.start('Menu');
 	}
 
 }
@@ -42,7 +42,6 @@ class Menu extends Phaser.State {
  }
  
 }
-
 class Nivel1 extends Phaser.State {
 
 	constructor() {
@@ -162,15 +161,13 @@ pasaralnivel5(){
 
 } 
 } 
-
 class Nivel2 extends Phaser.State {
    
  	constructor() {
- 		
+ 		//super(game, x, y, text, { font: "45px Arial", fill: "#ff0044", align: "center" });
         super();
         this.vel=100;
         this.vida=true;
-        this.temporizadorestudios=0;
          
  		
  	}   
@@ -182,21 +179,32 @@ class Nivel2 extends Phaser.State {
         this.load.image('estrella', 'sprites/estrella.png');
         this.load.image('piso', 'sprites/piso.png');
         this.load.image('cucaracha', 'sprites/curacha.png');
-        this.load.image('gota', 'sprites/gota.png');
+        this.load.image('frisbee', 'sprites/frisbee.png');
+        this.load.image('balon', 'sprites/balon.png');
+        this.load.image('futbol', 'sprites/futbol.png');
+        this.load.image('techo', 'sprites/techo.png');
          
      }	
  	create() {
         
-    this.textodederrota = this.add.text(200,200,' ', { font: '68px Arial', fill: '#000000' });
-    this.textodederrota.anchor.setTo(0.5, 0.5);
-    this.textodederrota.visible = true;
-        
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.fondo=this.add.sprite(0, 0, 'mapa1');
         this.estrella = this.add.sprite(9960,495,'estrella'); 
-        this.cucaracha = this.add.sprite(6500,485,'cucaracha'); 
+        this.cucaracha = this.add.sprite(6500,485,'cucaracha');
+        this.frisbee = this.add.sprite(3200,420,'frisbee');
+        this.frisbee1 = this.add.sprite(7200,420,'frisbee');
+        this.balon = this.add.sprite(6200,456,'balon');
+        this.balon1 = this.add.sprite(9200,456,'balon');
+        this.futbol = this.add.sprite(12000,480,'futbol');
+        this.techo = this.add.sprite(6430,420,'techo');
         this.physics.arcade.enable(this.estrella);
         this.physics.arcade.enable(this.cucaracha);
+        this.physics.arcade.enable(this.frisbee);
+        this.physics.arcade.enable(this.frisbee1);
+        this.physics.arcade.enable(this.balon);
+        this.physics.arcade.enable(this.balon1);
+        this.physics.arcade.enable(this.futbol);
+        this.physics.arcade.enable(this.techo);
         this.enemigo = this.add.group();
         this.enemigo.enableBody = true;
 	    this.plataforma=this.add.group();
@@ -206,10 +214,11 @@ class Nivel2 extends Phaser.State {
             this.piso = this.plataforma.create(i, this.fondo.height-76, 'plataforma');
         	this.piso.body.immovable = true;        
         }
-        for(var i=400;i<5000;i+=400){
+        for(var i=400;i<5000;i+=800){
             this.coso = this.enemigo.create(i, 480, 'cono');
             this.coso.body.immovable = true;
-        }for(var i=5000;i<10000;i+=600){
+        }
+        for(var i=5500;i<10000;i+=1200){
             this.coso = this.enemigo.create(i, 480, 'cono');
             this.coso.body.immovable = true;
         }
@@ -227,31 +236,29 @@ class Nivel2 extends Phaser.State {
       	this.camera.follow(this.jugador);
  	}
  	update() {
-        this.textodederrota.text="CLICK para reintentar";
-        this.textodederrota.visible = true;
-        this.temporizadorestudios += this.time.elapsed;
-        if(this.temporizadorestudios > 100) {
- 		this.temporizadorestudios = 0;
-        var posicioncaida = Math.floor(Math.random()*9960);
- 		this.gota = this.add.sprite(posicioncaida, 50, 'gota');
-        this.physics.arcade.enable(this.gota);
-        this.gota.enableBody = true;
-	    this.gota.body.gravity.y = 400;
-        this.gota.body.velocity.y = 700;
- 		this.physics.enable(this.gota, Phaser.Physics.ARCADE);
-        }
         
-        this.physics.arcade.overlap(this.gota, this.jugador, this.semojo, null, this);
         this.jugador.body.velocity.x = this.vel;
+        this.frisbee.body.velocity.x = -250;
+        this.balon.body.velocity.x = -300;
+        this.frisbee1.body.velocity.x = -250;
+        this.balon1.body.velocity.x = -300;
+        this.futbol.body.velocity.x = -125;
         this.physics.arcade.collide(this.jugador, this.plataforma);
         this.jugador.animations.play('derecha');
         this.physics.arcade.overlap(this.jugador, this.enemigo, this.matar, null, this);
         this.physics.arcade.overlap(this.jugador, this.cucaracha, this.empanada, null, this);
         this.physics.arcade.overlap(this.jugador, this.estrella, this.bestrella, null, this);
+        this.physics.arcade.overlap(this.jugador, this.frisbee, this.matar, null, this);
+        this.physics.arcade.overlap(this.jugador, this.frisbee1, this.matar, null, this);
+        this.physics.arcade.overlap(this.jugador, this.balon, this.matar, null, this);
+        this.physics.arcade.overlap(this.jugador, this.balon1, this.matar, null, this);
+        this.physics.arcade.overlap(this.jugador, this.futbol, this.matar, null, this);
+        this.physics.arcade.overlap(this.jugador, this.techo, this.salo, null, this);
         if(this.vida==true){
             this.vel=this.vel+0.3;
+            this.vely=-250;
             if (this.controles.up.isDown && this.jugador.body.touching.down ) {
-                this.jugador.body.velocity.y = -250;
+                this.jugador.body.velocity.y = this.vely;
                 //boom.play();
                 }
             if (this.controles.down.isDown) {
@@ -262,29 +269,21 @@ class Nivel2 extends Phaser.State {
         }
     
     }
-    
-    semojo(){
-        this.vel=0;
-         this.jugador.animations.stop();
-         this.jugador.frame = 9;
-         this.vida=false;
-         
-        
-        
-    }
-    matar() {
+    matar(mar, pla) {
          this.vel=0;
          this.jugador.animations.stop();
          this.jugador.frame = 9;
-         this.vida=false;       
+         this.vida=false;
         this.input.onTap.addOnce(this.restart,this);
     }
     
     restart(){
         
-        this.vel=100;        
+        this.vel=100;
+        this.vida=true;
         this.create();
     }
+    
     bestrella(mar, pla) {
         pla.kill();
         this.game.state.start('Nivel1');
@@ -292,8 +291,11 @@ class Nivel2 extends Phaser.State {
     empanada(mar, pla){
         this.vel=150;
     }
+    salo(mar, pla){
+        this.vely=-370;
+    }
+    
 }
-
 class Nivel3 extends Phaser.State {
  
  	constructor() {
@@ -311,10 +313,12 @@ class Nivel3 extends Phaser.State {
     this.load.spritesheet('pa', 'sprites/sprite.png', 32, 42);
     this.load.image('fondo', 'sprites/fondo.png');
     this.load.image('enemigo', 'sprites/enemigo.png');
+    this.load.image('profesor', 'sprites/profesor.png');
     this.load.image('perdio', 'sprites/perdio.png');
     this.load.image('estrella', 'sprites/estrella.png');
     this.load.image('porro', 'sprites/porro.png');
-        this.load.image('profesorbala', 'sprites/granda.png');
+        this.load.image('profesorbala', 'sprites/parcial1.png');
+        
     
   }	
  	create() {
@@ -322,10 +326,12 @@ class Nivel3 extends Phaser.State {
       	console.log(20);
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.fondo = this.add.sprite(0, 0, 'fondo');
-        this.enemigo= this.add.sprite(100, 1690, 'enemigo');
+        this.enemigo= this.add.sprite(100, 910, 'enemigo');
+        this.enemigo2= this.add.sprite(750, 400, 'profesor');
         this.porro= this.add.sprite(700, 1064, 'porro');
         this.estrella = this.add.sprite(10,10,'estrella'); 
         this.physics.arcade.enable(this.enemigo);
+        this.physics.arcade.enable(this.enemigo2);
         this.physics.arcade.enable(this.porro);
         this.physics.arcade.enable(this.estrella);
         this.plataforma=this.add.group();
@@ -374,11 +380,20 @@ class Nivel3 extends Phaser.State {
         this.profesorbalas = this.add.group();
     this.profesorbalas.enableBody = true;
     this.profesorbalas.physicsBodyType = Phaser.Physics.ARCADE;
-    this.profesorbalas.createMultiple(1, 'profesorbala');
+    this.profesorbalas.createMultiple(3, 'profesorbala');
     this.profesorbalas.setAll('anchor.x', 0.5);
     this.profesorbalas.setAll('anchor.y', 1);
     this.profesorbalas.setAll('outOfBoundsKill', true);
     this.profesorbalas.setAll('checkWorldBounds', true);
+            
+     this.profesorbalas2 = this.add.group();
+    this.profesorbalas2.enableBody = true;
+    this.profesorbalas2.physicsBodyType = Phaser.Physics.ARCADE;
+    this.profesorbalas2.createMultiple(1, 'profesorbala');
+    this.profesorbalas2.setAll('anchor.x', 0.5);
+    this.profesorbalas2.setAll('anchor.y', 1);
+    this.profesorbalas2.setAll('outOfBoundsKill', true);
+    this.profesorbalas2.setAll('checkWorldBounds', true);
 
     this.estadodelnivel = this.add.text(200,800,' ', { font: '84px Arial', fill: '#fff' });
     this.estadodelnivel.anchor.setTo(0.5, 0.5);
@@ -396,6 +411,7 @@ class Nivel3 extends Phaser.State {
           this.crear=true;
         }
         this.physics.arcade.overlap(this.jugador, this.enemigo, this.matar, null, this);
+        this.physics.arcade.overlap(this.jugador, this.enemigo2, this.matar, null, this);
         this.physics.arcade.overlap(this.jugador, this.porro, this.pvolar, null, this);
         this.physics.arcade.overlap(this.jugador, this.estrella, this.bestrella, null, this);
         this.jugador.body.velocity.x = 0;
@@ -420,8 +436,10 @@ class Nivel3 extends Phaser.State {
         }
               
         this.profesordispara();
+        this.profesordispara2();
         
         this.physics.arcade.overlap(this.profesorbalas, this.jugador, this.enemigomegolpea, null, this);
+        this.physics.arcade.overlap(this.profesorbalas2, this.jugador, this.enemigomegolpea, null, this);
 
       } else if (this.vidas ==0) {
         this.fondo.kill; 
@@ -445,14 +463,23 @@ class Nivel3 extends Phaser.State {
         if (this.balaenemigo){        
         var shooter=this.enemigo;      
         this.balaenemigo.reset(shooter.body.x, shooter.body.y);
-        this.physics.arcade.moveToObject(this.balaenemigo,this.jugador,400);        
+        this.physics.arcade.moveToObject(this.balaenemigo,this.jugador,300);        
+    } 
+    }
+    profesordispara2 () {
+    
+        this.balaenemigo = this.profesorbalas2.getFirstExists(false);
+        if (this.balaenemigo){        
+        var shooter=this.enemigo2;      
+        this.balaenemigo.reset(shooter.body.x, shooter.body.y);
+        this.physics.arcade.moveToObject(this.balaenemigo,this.jugador,300);        
     }
     }
 
    pvolar(mar, pla) {
     pla.kill();
     this.salt=400;
-    this.vel=250;
+    this.vel=350;
   }
    bestrella(mar, pla) {
     pla.kill();
@@ -469,7 +496,6 @@ restart(){
  
      
  }
-
 class Nivel4 extends Phaser.State {
 
 	constructor() {
@@ -585,7 +611,6 @@ clickvive100(vive100){
  } 
     
 }
-
 class Nivel5 extends Phaser.State {
 
 	constructor() {
@@ -644,7 +669,7 @@ class Nivel5 extends Phaser.State {
     this.esmadbalas = this.add.group();
     this.esmadbalas.enableBody = true;
     this.esmadbalas.physicsBodyType = Phaser.Physics.ARCADE;
-    this.esmadbalas.createMultiple(30, 'esmadbala');
+    this.esmadbalas.createMultiple(20, 'esmadbala');
     this.esmadbalas.setAll('anchor.x', 0.5);
     this.esmadbalas.setAll('anchor.y', 1);
     this.esmadbalas.setAll('outOfBoundsKill', true);
